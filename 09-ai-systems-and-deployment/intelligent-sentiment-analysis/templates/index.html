@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>舆情智脑 | NLP Sentiment Core</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --accent-cyan: #06b6d4;
+            --accent-purple: #8b5cf6;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            background-image: radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+            color: var(--text-main);
+            font-family: 'Roboto', sans-serif;
+            min-height: 100vh;
+        }
+
+        /* 玻璃拟态容器 */
+        .glass-panel {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .brand-title {
+            font-family: 'Orbitron', sans-serif;
+            background: linear-gradient(to right, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        /* 选项卡样式 */
+        .nav-pills .nav-link {
+            color: var(--text-muted);
+            border-radius: 8px;
+            margin: 0 5px;
+            transition: all 0.3s;
+        }
+        .nav-pills .nav-link.active {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            color: white;
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.5);
+        }
+
+        /* 输入框 */
+        .dark-input {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 10px;
+        }
+        .dark-input:focus {
+            background: rgba(0, 0, 0, 0.4);
+            border-color: var(--accent-cyan);
+            color: white;
+            box-shadow: none;
+        }
+
+        /* 按钮 */
+        .btn-cyber {
+            background: transparent;
+            border: 1px solid var(--accent-cyan);
+            color: var(--accent-cyan);
+            border-radius: 30px;
+            padding: 10px 30px;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+        .btn-cyber:hover {
+            background: var(--accent-cyan);
+            color: #000;
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.6);
+        }
+
+        /* 模型卡片对比 */
+        .model-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 20px;
+            height: 100%;
+            border-top: 3px solid transparent;
+            transition: transform 0.3s;
+        }
+        .model-card:hover { transform: translateY(-5px); }
+        .model-bert { border-color: var(--accent-purple); }
+        .model-snow { border-color: #64748b; }
+
+        .score-display {
+            font-size: 2.5rem;
+            font-weight: bold;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        /* 词云容器 */
+        .wc-box {
+            border: 1px dashed rgba(255,255,255,0.2);
+            border-radius: 12px;
+            min-height: 350px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .wc-img { width: 100%; border-radius: 8px; filter: drop-shadow(0 0 10px rgba(6,182,212,0.3)); }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="text-center mb-5">
+            <h1 class="brand-title display-4"><i class="fas fa-brain me-3"></i>SENTIMENT CORE</h1>
+            <p class="text-muted letter-spacing-2">基于 Transformer 架构的新一代舆情洞察系统</p>
+        </div>
+
+        <div class="glass-panel p-4">
+            <ul class="nav nav-pills nav-fill mb-4" id="pills-tab" role="tablist">
+                <li class="nav-item"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#tab-1"><i class="fas fa-microscope me-2"></i>深度对比实验</button></li>
+                <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-2"><i class="fas fa-upload me-2"></i>批量数据挖掘</button></li>
+                <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-3"><i class="fas fa-spider me-2"></i>全网仿真采集</button></li>
+            </ul>
+
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="tab-1">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8">
+                            <textarea id="inputText" class="form-control dark-input mb-4" rows="3" placeholder="输入测试文本（尝试输入转折句，如：'虽然物流慢，但东西真的好'）..."></textarea>
+                            <div class="text-center mb-5">
+                                <button onclick="runAnalysis()" id="btn-analyze" class="btn btn-cyber">执行推理 <i class="fas fa-bolt ms-2"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="compareResult" class="row g-4" style="display:none; opacity: 0; transition: opacity 0.5s;">
+                        <div class="col-md-6">
+                            <div class="model-card model-bert">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="badge bg-primary"><i class="fas fa-robot me-1"></i> Deep Learning</span>
+                                    <small class="text-light">RoBERTa-Base</small>
+                                </div>
+                                <h5 class="text-white mb-3">深度上下文推理</h5>
+                                <div id="bertLabel" class="score-display text-white">--</div>
+                                <div class="progress mt-3" style="height: 6px; background: rgba(255,255,255,0.1);">
+                                    <div id="bertBar" class="progress-bar bg-primary" style="width: 0%"></div>
+                                </div>
+                                <div class="mt-2 text-end text-muted small">置信度: <span id="bertScore">0.00%</span></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="model-card model-snow">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="badge bg-secondary"><i class="fas fa-calculator me-1"></i> Bayesian Stats</span>
+                                    <small class="text-muted">Naive Bayes</small>
+                                </div>
+                                <h5 class="text-muted mb-3">传统统计模型</h5>
+                                <div id="snowLabel" class="score-display text-muted">--</div>
+                                <div class="progress mt-3" style="height: 6px; background: rgba(255,255,255,0.1);">
+                                    <div id="snowBar" class="progress-bar bg-secondary" style="width: 0%"></div>
+                                </div>
+                                <div class="mt-2 text-end text-muted small">置信度: <span id="snowScore">0.00%</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="tab-2">
+                    <div class="text-center py-5 border border-dashed border-secondary rounded-3 mb-4">
+                        <i class="fas fa-file-csv fa-3x text-muted mb-3"></i>
+                        <h5 class="text-white">上传业务数据文件</h5>
+                        <p class="text-muted small mb-3">支持 .xlsx / .csv (系统将自动调用 GPU 进行批量推理)</p>
+                        <input type="file" id="fileInput" class="d-none">
+                        <button onclick="document.getElementById('fileInput').click()" class="btn btn-outline-light btn-sm">选择文件</button>
+                    </div>
+                    <div class="text-center">
+                        <button onclick="uploadFile()" id="btn-upload" class="btn btn-cyber">开始挖掘</button>
+                    </div>
+                    <div id="batchReport" class="mt-4" style="display:none;"></div>
+                </div>
+
+                <div class="tab-pane fade" id="tab-3">
+                    <div class="input-group mb-4">
+                        <span class="input-group-text bg-dark border-secondary text-light"><i class="fas fa-link"></i></span>
+                        <input type="text" id="crawlUrl" class="form-control dark-input" placeholder="输入京东/淘宝商品详情页 URL...">
+                    </div>
+                    <div class="text-center mb-4">
+                        <button onclick="startCrawl()" id="btn-crawl" class="btn btn-cyber">启动爬虫节点</button>
+                    </div>
+                    <div id="crawlReport" class="mt-4" style="display:none;"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-4 text-muted small">
+            System Architecture: Flask + PyTorch + Transformers | Version 2.0.1 Pro
+        </div>
+    </div>
+
+    <div id="reportTemplate" style="display:none;">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="model-card">
+                    <h5 class="text-white mb-4"><i class="fas fa-chart-pie me-2"></i>分析概览</h5>
+                    <div class="d-flex justify-content-between mb-3 border-bottom border-secondary pb-2"><span>数据总量</span><span class="text-white fw-bold t-total">0</span></div>
+                    <div class="d-flex justify-content-between mb-3 text-success"><span><i class="fas fa-arrow-up"></i> 正面趋势</span><span class="fw-bold t-pos">0</span></div>
+                    <div class="d-flex justify-content-between text-danger"><span><i class="fas fa-arrow-down"></i> 负面趋势</span><span class="fw-bold t-neg">0</span></div>
+                    <div class="d-grid mt-4 dl-box" style="display:none;">
+                         <button class="btn btn-sm btn-secondary disabled">数据已归档 (Excel)</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="model-card text-center">
+                    <h5 class="text-white mb-3">语义关键词云 (Semantic WordCloud)</h5>
+                    <div class="wc-box">
+                        <img src="" class="wc-img" style="display:none;">
+                        <div class="spinner-border text-info wc-loading" style="display:none;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 1. 深度对比
+        async function runAnalysis() {
+            const text = document.getElementById('inputText').value;
+            if(!text) return;
+            const btn = document.getElementById('btn-analyze');
+            const resBox = document.getElementById('compareResult');
+            
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin me-2"></i>神经网络计算中...';
+            resBox.style.opacity = 0;
+            
+            try {
+                const res = await fetch('/api/analyze', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({text})});
+                const data = await res.json();
+                
+                resBox.style.display = 'flex';
+                // 少量延迟制造动画感
+                setTimeout(() => resBox.style.opacity = 1, 100);
+
+                updateCard('bert', data.bert);
+                updateCard('snow', data.snow);
+                
+            } catch(e) { alert('API Error'); } 
+            finally { btn.innerHTML = '执行推理 <i class="fas fa-bolt ms-2"></i>'; }
+        }
+
+        function updateCard(type, data) {
+            const labelEl = document.getElementById(type+'Label');
+            const barEl = document.getElementById(type+'Bar');
+            const scoreEl = document.getElementById(type+'Score');
+            
+            labelEl.innerText = data.label;
+            scoreEl.innerText = (data.score * 100).toFixed(2) + '%';
+            barEl.style.width = (data.score * 100) + '%';
+            
+            // 颜色逻辑
+            if(data.label.includes('正面') || data.label.includes('Positive')) {
+                labelEl.style.color = '#4ade80'; // Green
+                barEl.className = `progress-bar bg-success`;
+            } else if(data.label.includes('负面') || data.label.includes('Negative')) {
+                labelEl.style.color = '#f87171'; // Red
+                barEl.className = `progress-bar bg-danger`;
+            } else {
+                labelEl.style.color = '#94a3b8'; // Gray
+            }
+        }
+
+        // 2. 批量与爬虫共用渲染逻辑
+        function renderReport(containerId, data) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = document.getElementById('reportTemplate').innerHTML;
+            container.style.display = 'block';
+            
+            container.querySelector('.t-total').innerText = data.total;
+            container.querySelector('.t-pos').innerText = data.pos;
+            container.querySelector('.t-neg').innerText = data.neg;
+            
+            const img = container.querySelector('.wc-img');
+            img.onload = () => { container.querySelector('.wc-loading').style.display = 'none'; img.style.display = 'block'; };
+            img.src = data.img_url + "?t=" + Date.now();
+            
+            if(data.download) container.querySelector('.dl-box').style.display = 'block';
+        }
+
+        // 批量上传
+        async function uploadFile() {
+            const file = document.getElementById('fileInput').files[0];
+            if(!file) return alert('请选择文件');
+            const btn = document.getElementById('btn-upload');
+            btn.innerHTML = '<i class="fas fa-server fa-spin me-2"></i>集群运算中...';
+            
+            const fd = new FormData(); fd.append('file', file);
+            const res = await fetch('/api/upload', {method:'POST', body:fd});
+            const data = await res.json();
+            renderReport('batchReport', data);
+            btn.innerHTML = '开始挖掘';
+        }
+
+        // 仿真爬虫
+        async function startCrawl() {
+            const url = document.getElementById('crawlUrl').value;
+            if(!url) return alert('输入URL');
+            const btn = document.getElementById('btn-crawl');
+            btn.innerHTML = '<i class="fas fa-network-wired fa-spin me-2"></i>正在解析节点...';
+            
+            const res = await fetch('/api/crawl', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({url})});
+            const data = await res.json();
+            renderReport('crawlReport', data);
+            btn.innerHTML = '启动爬虫节点';
+        }
+    </script>
+</body>
+</html>

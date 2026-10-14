@@ -1,0 +1,68 @@
+# Python caches and tooling
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Virtual environments and local environment variables
+.venv/
+venv/
+env/
+.env
+.env.*
+!.env.example
+
+# Editor and operating-system files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+*.bak
+*~
+
+# Local credentials and private keys
+credentials.json
+secrets.json
+cookies.txt
+*.pem
+*.key
+
+# Model weights and generated training artifacts
+*.pth
+*.pt
+*.ckpt
+*.h5
+*.hdf5
+*.onnx
+*.safetensors
+*.pkl
+*.joblib
+**/checkpoints/
+**/runs/
+**/logs/
+**/outputs/
+
+# Large binary data and archives
+*.npy
+*.npz
+*.mat
+*.zip
+*.rar
+*.7z
+*.tar
+*.tar.gz
+
+# Project intentionally withheld pending authorization review
+05-natural-language-processing/natural-language-classification/

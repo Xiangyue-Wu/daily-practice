@@ -1,0 +1,11 @@
+name: nlp-text-processing
+channels:
+  - defaults
+dependencies:
+  - python=3.11.17
+  - pip
+  - pip:
+      - jieba==0.42.1
+      - matplotlib==3.11.2
+      - numpy==2.4.6
+      - scikit-learn==1.9.1

@@ -1,0 +1,196 @@
+import os
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from torch.optim.lr_scheduler import StepLR
+from torchvision import datasets
+from torchvision.transforms import Compose, ToTensor, Normalize, Grayscale, Resize
+from torch.utils.data import DataLoader
+import matplotlib.pyplot as plt
+import numpy as np
+import time
+
+plt.rcParams['font.sans-serif'] = ['SimHei']
+plt.rcParams['axes.unicode_minus'] = False
+
+class SimpleCNN(nn.Module):
+    def __init__(self):
+        super(SimpleCNN, self).__init__()
+        self.conv1 = nn.Conv2d(1, 32, 3, 1)
+        self.conv2 = nn.Conv2d(32, 64, 3, 1)
+        self.pool = nn.MaxPool2d(2)
+        self.dropout1 = nn.Dropout(0.25)
+        self.dropout2 = nn.Dropout(0.5)
+        self.fc1 = nn.Linear(9216, 128)
+        self.fc2 = nn.Linear(128, 10)
+        return None
+
+    def forward(self, x):
+        x = self.conv1(x)
+        x = torch.relu(x)
+        x = self.conv2(x)
+        x = torch.relu(x)
+        x = self.pool(x)
+        x = self.dropout1(x)
+        x = torch.flatten(x, 1)
+        x = self.fc1(x)
+        x = torch.relu(x)
+        x = self.dropout2(x)
+        x = self.fc2(x)
+        return x
+
+def build_model():
+    model = SimpleCNN()
+    return model
+
+def load_data(root=r'data/MNIST_PNG'):
+    transform = Compose([
+        Grayscale(num_output_channels=1),
+        Resize(28),
+        ToTensor(),
+        Normalize((0.1307,), (0.3081,))
+    ])
+    train_dir = os.path.join(root, 'train')
+    test_dir = os.path.join(root, 'test')
+    train_data = datasets.ImageFolder(train_dir, transform=transform)
+    test_data = datasets.ImageFolder(test_dir, transform=transform)
+    return train_data, test_data
+
+def create_data_loaders(train_data, test_data, bs=128):
+    train_loader = DataLoader(train_data, batch_size=bs, shuffle=True, num_workers=2)
+    test_loader = DataLoader(test_data, batch_size=bs, shuffle=False, num_workers=2)
+    return train_loader, test_loader
+
+def train_model(model, train_loader, test_loader, num_epochs=10, lr=0.001):
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    model.to(device)
+    criterion = nn.CrossEntropyLoss()
+    optimizer = optim.Adam(model.parameters(), lr=lr)
+    scheduler = StepLR(optimizer, step_size=5, gamma=0.5)
+    train_losses = []
+    test_losses = []
+    train_accs = []
+    test_accs = []
+    for epoch in range(1, num_epochs + 1):
+        model.train()
+        running_loss = 0.0
+        correct = 0
+        total = 0
+        for images, labels in train_loader:
+            images, labels = images.to(device), labels.to(device)
+            optimizer.zero_grad()
+            outputs = model(images)
+            loss = criterion(outputs, labels)
+            loss.backward()
+            optimizer.step()
+            running_loss += loss.item()
+            _, predicted = torch.max(outputs.data, 1)
+            total += labels.size(0)
+            correct += (predicted == labels).sum().item()
+        scheduler.step()
+        train_loss = running_loss / len(train_loader)
+        train_acc = 100.0 * correct / total
+        train_losses.append(train_loss)
+        train_accs.append(train_acc)
+        model.eval()
+        t_loss = 0.0
+        t_correct = 0
+        t_total = 0
+        with torch.no_grad():
+            for images, labels in test_loader:
+                images, labels = images.to(device), labels.to(device)
+                outputs = model(images)
+                loss = criterion(outputs, labels)
+                t_loss += loss.item()
+                _, predicted = torch.max(outputs.data, 1)
+                t_total += labels.size(0)
+                t_correct += (predicted == labels).sum().item()
+        test_loss = t_loss / len(test_loader)
+        test_acc = 100.0 * t_correct / t_total
+        test_losses.append(test_loss)
+        test_accs.append(test_acc)
+        print(f'Epoch {epoch}: Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.2f}%, Test Loss: {test_loss:.4f}, Test Acc: {test_acc:.2f}%')
+    return train_losses, test_losses, train_accs, test_accs
+
+def visualize_curves(train_losses, test_losses, train_accs, test_accs, out_dir):
+    os.makedirs(out_dir, exist_ok=True)
+    epochs = range(1, len(train_losses) + 1)
+    plt.figure()
+    plt.plot(epochs, train_losses, 'b', label='训练损失')
+    plt.plot(epochs, test_losses, 'r', label='测试损失')
+    plt.title('原模型-损失曲线')
+    plt.xlabel('Epoch')
+    plt.ylabel('损失')
+    plt.legend()
+    plt.savefig(os.path.join(out_dir, 'loss_curve.png'))
+    plt.close()
+    plt.figure()
+    plt.plot(epochs, train_accs, 'g', label='训练准确率')
+    plt.plot(epochs, test_accs, 'orange', label='测试准确率')
+    plt.title('原模型-准确率曲线')
+    plt.xlabel('Epoch')
+    plt.ylabel('准确率 (%)')
+    plt.legend()
+    plt.savefig(os.path.join(out_dir, 'accuracy_curve.png'))
+    plt.close()
+    return None
+
+def visualize_confusion_matrix(model, test_loader, out_dir):
+    os.makedirs(out_dir, exist_ok=True)
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    model.eval()
+    num_classes = 10
+    conf = np.zeros((num_classes, num_classes), dtype=np.int64)
+    with torch.no_grad():
+        for images, labels in test_loader:
+            images, labels = images.to(device), labels.to(device)
+            outputs = model(images)
+            _, preds = torch.max(outputs, 1)
+            for t, p in zip(labels.view(-1), preds.view(-1)):
+                conf[int(t.item()), int(p.item())] += 1
+    plt.figure(figsize=(10, 9))
+    im = plt.imshow(conf, cmap='Blues')
+    plt.colorbar(im)
+    classes = getattr(test_loader.dataset, 'classes', [str(i) for i in range(num_classes)])
+    plt.xticks(np.arange(num_classes), classes, rotation=45, ha='right')
+    plt.yticks(np.arange(num_classes), classes)
+    total_cm = conf.sum()
+    for i in range(num_classes):
+        for j in range(num_classes):
+            val = conf[i, j]
+            pct = (val / total_cm * 100.0) if total_cm > 0 else 0.0
+            plt.text(j, i, f'{val}\n{pct:.1f}%', ha='center', va='center', color='black')
+    plt.title('原模型-混淆矩阵')
+    plt.tight_layout()
+    plt.savefig(os.path.join(out_dir, 'confusion_matrix.png'))
+    plt.close()
+    return None
+
+def save_model(model, path):
+    torch.save(model.state_dict(), path)
+    return None
+
+def main():
+    start = time.perf_counter()
+    # 1. 构建模型
+    model = build_model()
+    # 2. 加载数据
+    train_data, test_data = load_data()
+    # 3. 创建数据加载器
+    train_loader, test_loader = create_data_loaders(train_data, test_data)
+    # 4. 训练模型
+    train_losses, test_losses, train_accs, test_accs = train_model(model, train_loader, test_loader, num_epochs=10)
+    # 5. 可视化曲线与混淆矩阵
+    out_dir = r'data/re1'
+    visualize_curves(train_losses, test_losses, train_accs, test_accs, out_dir)
+    visualize_confusion_matrix(model, test_loader, out_dir)
+    # 6. 保存模型
+    save_path = os.path.join(out_dir, 'mnist_cnn.ckpt')
+    save_model(model, save_path)
+    # 7. 输出耗时
+    elapsed = time.perf_counter() - start
+    print(f'总耗时：{elapsed:.2f}秒')
+    return None
+
+if __name__ == "__main__":
+    main()
