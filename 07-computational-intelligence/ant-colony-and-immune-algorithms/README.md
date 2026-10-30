@@ -4,6 +4,10 @@
 
 This project collects computational-intelligence methods for combinatorial optimization, continuous optimization, and anomaly detection. The scripts emphasize algorithm mechanics and convergence visualization on compact, self-contained problems.
 
+• Compared ant-colony and immune-inspired search on traveling-salesperson optimization, including pheromone updates, vaccination, mutation, selection, and local improvement.
+
+• Implemented Ant System, Ant Colony System, Max–Min Ant System, binary immune optimization, and an Iris-based negative-selection and clonal anomaly detector.
+
 ## Approach
 
 The traveling-salesperson workflow compares an ant-density ant-colony optimizer with an immune-inspired population method using vaccination, mutation, selection, and local improvement. Additional ant-colony variants implement Ant System, Ant Colony System, and Max–Min Ant System. Another script encodes a continuous objective as binary antibodies for immune optimization, while an Iris-based negative-selection/clonal procedure treats one class as normal and the remaining classes as anomalies. Most inputs are embedded or provided by scikit-learn; generated curves and paths are not included, and stochastic results are intentionally not quoted.

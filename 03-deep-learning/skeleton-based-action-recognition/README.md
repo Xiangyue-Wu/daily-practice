@@ -4,6 +4,10 @@
 
 This project classifies hand actions from skeleton sequences in the FPHA data format. It compares recurrent, temporal-convolutional, and attention-based sequence models while retaining dedicated preprocessing and repeated-run evaluation utilities.
 
+• Built an LSTM baseline, reproduced Res-TCN, and designed a Transformer with velocity features and attention pooling on the FPHA dataset.
+
+• Applied wrist normalization, Mixup, temporal cropping, and spatial augmentation; the recorded best Transformer validation accuracy was 86.96%.
+
 ## Approach
 
 The code loads skeleton and label arrays, normalizes joint coordinates, pads or crops sequences, and constructs PyTorch datasets. `lstm_baseline.py` implements a single-layer LSTM baseline. `Res-TCN.py` builds a residual temporal convolutional network and records training, validation, confusion-matrix, and stability diagnostics. `base.py` and `transformer.py` implement Transformer encoders; the latter adds wrist normalization, temporal cropping, spatial jitter, and mixup. `data_processing.py` supports preparation of the source arrays. FPHA data, learned checkpoints, TensorBoard logs, and result images are not included.

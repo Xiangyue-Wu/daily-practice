@@ -4,6 +4,10 @@
 
 This project provides small, reproducible demonstrations of three text-processing tasks: Chinese short-text similarity, Chinese keyword extraction, and dictionary-based spelling correction. The modules are coordinated by `src/main.py` and have pinned environment descriptions.
 
+• Compared Chinese short texts with jieba tokenization, TF-IDF vectors, and cosine similarity, and contrasted TF-IDF with TextRank keyword extraction.
+
+• Implemented Levenshtein distance from scratch for dictionary-based correction; verified runs recovered all four intended words, with the closest topical pair scoring 0.171635 cosine similarity.
+
 ## Approach
 
 Text similarity uses jieba tokenization, TF-IDF vectors, and cosine similarity. Keyword extraction compares jieba's TF-IDF and TextRank methods before and after task-specific stop-word filtering. Spelling correction uses a manually implemented Levenshtein dynamic program and ranks candidates from a compact dictionary. A verified local run found the closest topical text pair at cosine similarity `0.171635`; all four misspellings selected the intended word with edit distance one, except `intelegence`, which required distance two. The small inputs and generated CSV/figures remain outside this source-only folder.

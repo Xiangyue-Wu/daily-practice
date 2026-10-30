@@ -4,6 +4,10 @@
 
 This project collects and processes Chinese text for exploratory analysis. The retained scripts demonstrate web-content acquisition, text cleanup, tokenization, frequency analysis, and word-cloud or chart generation as separate stages rather than as a packaged crawler.
 
+• Built Chinese text-cleaning and jieba tokenization workflows that calculate word frequencies and generate word-cloud or chart visualizations.
+
+• Kept network-assisted news collection separate from the local text-analysis demonstration so authorized offline inputs can be used without web acquisition.
+
 ## Approach
 
 `src/ls.py` and `src/try7CLOUDE.py` are alternative complete entry points for the same sequence: fetch listed news pages, extract and clean text, segment it with jieba, compute frequencies, and draw a word cloud. The root-level script is a separate local demonstration of similarity, keywords, and edit distance and does not fetch pages. Cached responses, stop-word resources, and generated images are not included. Any web acquisition must respect current terms, robots policy, rate limits, and applicable law; authorized local text can replace collection.

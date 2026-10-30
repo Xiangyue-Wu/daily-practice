@@ -4,6 +4,10 @@
 
 This project models overnight vehicle transfers between two rental locations as a finite Markov decision process. It uses dynamic programming to estimate long-term returns and determine how many cars should be moved for each pair of inventory levels.
 
+• Modeled Jack's Car Rental as a Markov decision process with Poisson requests and returns, transfer costs, rental income, capacity limits, and discounted future value.
+
+• Implemented policy iteration, value iteration, and a parking-penalty variant to derive relocation policies and visualize state values and transfer decisions.
+
 ## Approach
 
 The environment represents rental requests and returns with Poisson probabilities, transfer costs, rental income, capacity constraints, and discounted future value. The retained variants implement policy iteration and value iteration, including a modified reward case with parking-capacity penalties. Each script produces heatmaps for the state-value surface and transfer policy as iterations proceed. The implementations are self-contained apart from scientific-Python plotting dependencies; generated figures are not included, and convergence was not rerun during repository preparation.

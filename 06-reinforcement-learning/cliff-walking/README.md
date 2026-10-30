@@ -4,6 +4,10 @@
 
 This project solves the classic cliff-walking gridworld and compares model-based planning with tabular reinforcement learning. It visualizes value functions, learned policies, paths, and reward histories without presenting the task as a large-scale control system.
 
+• Modeled Cliff Walking as a finite gridworld and used dynamic programming to obtain a value function, policy, and 13-step optimal path after 14 iterations.
+
+• Compared epsilon-greedy SARSA and Q-learning on the same transitions and rewards to examine convergence, learned routes, and risk around the cliff.
+
 ## Approach
 
 `DP.py` defines the grid transitions, step cost, cliff penalty, and goal, then performs dynamic-programming updates to obtain an optimal value function and policy. `Sarsa_QL.py` implements epsilon-greedy SARSA and Q-learning on the same environment and compares their state values, policies, and episode returns. The environment constants and learning settings are embedded in the scripts, while generated plots are not committed. Because stochastic training was not rerun for this source snapshot, no convergence or return claim is made here.

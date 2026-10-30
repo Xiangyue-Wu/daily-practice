@@ -4,6 +4,10 @@
 
 This project demonstrates three generative approaches on a small watermelon-quality dataset containing categorical and continuous attributes. It predicts the class of a held-out sample while exposing how different probability assumptions affect classification.
 
+• Implemented mixed-feature Naive Bayes and Gaussian discriminant analysis to expose class-conditional probability modeling and decision boundaries.
+
+• Added an expectation-maximization Gaussian-mixture workflow with repeated initialization, cluster-to-class mapping, and PCA visualization on embedded samples.
+
 ## Approach
 
 `NBCfinal.py` implements a Naive Bayes classifier for mixed features. `GDAfinal.py` provides one- and two-dimensional Gaussian discriminant analysis using sugar content and density, including evaluation and decision visualizations. `GE1.py` encodes non-numeric attributes and implements Gaussian-mixture estimation with expectation maximization, repeated initialization, cluster-to-class mapping, and a PCA-based plot. The dataset is embedded directly in the scripts, so no external file is required. Printed scores and generated images should be treated as run outputs, not as guaranteed repository results.

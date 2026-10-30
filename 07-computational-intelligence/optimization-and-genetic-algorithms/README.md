@@ -4,6 +4,10 @@
 
 This project demonstrates genetic algorithms across three problem types: bounded continuous optimization, traveling-salesperson routing, and binary knapsack selection. Python implementations cover the first two tasks, while the knapsack workflow is written in Julia.
 
+• Applied genetic algorithms to bounded continuous optimization, permutation-based traveling-salesperson routing, and binary knapsack selection across Python and Julia.
+
+• Implemented task-specific representations with tournament or fitness-based selection, crossover, mutation, bounds or capacity handling, elitism, and convergence visualization.
+
 ## Approach
 
 The continuous optimizer uses tournament selection, arithmetic crossover, Gaussian mutation, bounds handling, and population-history visualization. The TSP implementation represents tours as permutations and applies tournament selection, order crossover, mutation, repeated runs, and route/convergence plots. The Julia program evolves binary item-selection vectors with fitness penalties, selection, crossover, mutation, and elitism under a capacity constraint. All task data are embedded in the source, so external datasets are not required. Results vary with random initialization and were not rerun for this README.

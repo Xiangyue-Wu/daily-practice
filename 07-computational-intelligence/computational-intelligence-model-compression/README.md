@@ -4,6 +4,10 @@
 
 This project explores channel pruning of a CIFAR-10 ResNet-32 using genetic algorithms and particle swarm optimization. It also contains baseline training and a comparison utility for accuracy, parameter count, estimated computation, and inference time.
 
+• Established a CIFAR-10 ResNet-32 baseline and represented stage-wise channel configurations as candidates for structured pruning.
+
+• Used genetic algorithms and particle swarm optimization to search, transfer compatible weights, fine-tune pruned networks, and compare accuracy, parameters, computation, and runtime.
+
 ## Approach
 
 `rest32/1.py` trains the CIFAR ResNet-32 baseline. `ga/2ga-14.py` and `pso/3pso-14.py` search stage-channel configurations, transfer compatible weights, fine-tune candidates, and save pruned checkpoints; the PSO script additionally expects its prior-round checkpoint. Only after those artifacts exist can `compare/compare.py` evaluate accuracy, parameters, computation, and runtime. The required CIFAR-10 data, baseline and pruned weights, prior PSO state, and result logs are not included. Numeric values embedded in comments are therefore not treated as verified results.

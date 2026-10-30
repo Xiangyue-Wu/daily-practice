@@ -4,6 +4,10 @@
 
 This project cleans and explores a movie metadata table stored as `movies.csv`. The scripts normalize irregular fields, separate structured information from combined text columns, fill selected missing values, and produce visual summaries of ratings, genres, runtime, and gross revenue.
 
+• Cleaned irregular movie metadata by normalizing fields, parsing director and actor information, separating rated records, and estimating selected missing ratings.
+
+• Visualized rating, genre, runtime, and revenue patterns, with an optional TF-IDF and random-forest workflow for modeling ratings from people-related text.
+
 ## Approach
 
 The implementation uses pandas and NumPy for tabular cleanup and Matplotlib/Seaborn for exploratory plots. Separate scripts preserve different stages of the workflow: basic normalization, director and actor parsing, rated/unrated record separation, missing-rating estimation, and visual analysis. One path also constructs TF-IDF features from people-related text and fits a random-forest regressor with randomized parameter search. The project expects the actual input file to be named `movies.csv`; neither the dataset nor generated CSV and image outputs are included here.

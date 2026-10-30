@@ -4,6 +4,10 @@
 
 This project implements a compact convolutional neural network for ten-class image classification. It separates model training from checkpoint-based evaluation and visualization, making the core workflow easy to inspect without bundling data or learned weights.
 
+• Trained a compact CNN on ImageFolder-formatted CIFAR-10 data with normalization, augmentation, learning-rate scheduling, and best-checkpoint selection.
+
+• Separated evaluation into a checkpoint-driven workflow reporting overall and per-class accuracy with confusion-matrix and class-accuracy visualizations.
+
 ## Approach
 
 `final.py` loads CIFAR-10 images arranged in `train/` and `test/` folders, applies normalization and augmentation, trains `ImprovedCIFAR10CNN`, tracks loss and accuracy, and saves the best state dictionary. `use.py` reconstructs the same architecture, loads a checkpoint, computes overall and per-class accuracy, and produces a confusion matrix and class-accuracy chart. The dataset directory, `best_model.pth`, and generated visualizations are intentionally absent, so this source snapshot does not claim a verified accuracy.

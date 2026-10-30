@@ -4,6 +4,10 @@
 
 This project investigates limited-label classification on MSTAR radar imagery with ResNet-18. It retains a sequence of supervised baselines, reduced-label comparisons, a FixMatch-style semi-supervised implementation, and scripts for evaluating recovery from scarce labels.
 
+• Established full-label and reduced-label ResNet-18 baselines for MSTAR radar classification, including a dedicated 10% labeled-data experiment.
+
+• Implemented FixMatch-style training with weak and strong augmentation, confidence-filtered pseudo-labels, combined losses, and an exponential-moving-average model.
+
 ## Approach
 
 Scripts `2.1.py` and `2.2.py` are independent supervised comparisons. For the final limited-label sequence, `2.3.py` produces the 10% labeled ResNet-18 baseline, `2.4.py` trains the FixMatch-style model with weak/strong augmentation, confidence-filtered pseudo-labels, supervised/unsupervised losses, and an exponential-moving-average model, and `2.5.py` compares their checkpoints and parses the FixMatch log. All expect class folders under `data/mstar-train` and `data/mstar-test`. MSTAR data, pretrained downloads, checkpoints, and logs are not included.

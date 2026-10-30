@@ -4,6 +4,10 @@
 
 This project implements two practical image-enhancement operations: local contrast improvement and single-image haze removal. Each operation is kept in a focused script and writes processed images for direct visual comparison.
 
+• Enhanced local luminance contrast with CLAHE while limiting amplification in relatively uniform image regions.
+
+• Implemented dark-channel-prior dehazing with atmospheric-light estimation, transmission recovery, numerical stabilization, and scene-radiance reconstruction.
+
 ## Approach
 
 The contrast workflow uses OpenCV CLAHE to enhance local luminance while limiting excessive amplification. The dehazing workflow follows the dark-channel-prior pipeline: it computes the dark channel, estimates atmospheric light and transmission, constrains transmission for numerical stability, reconstructs the scene radiance, and produces comparison figures. Both scripts expect source images in local input folders and save outputs to result directories. No test images, generated images, or objective quality scores are included in this repository.

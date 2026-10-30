@@ -4,6 +4,10 @@
 
 This project applies principal component analysis to face images for compact representation, recognition, and reconstruction. It provides data preparation and two executable exercises that expose both the recognition workflow and the visual effect of changing the retained subspace.
 
+• Constructed an eigenface representation by centering aligned grayscale faces, deriving a PCA basis, and projecting images into a compact feature space.
+
+• Used projected distances for identity matching and inverse projection to visualize how the number of retained components affects reconstruction quality.
+
 ## Approach
 
 The code reads aligned grayscale face samples, reshapes them into vectors, centers the data, and derives an eigenface basis. Projected feature vectors support identity comparison, while inverse projection reconstructs faces from a selected number of principal components. The exercises include visual interfaces or plots for inspecting source images, eigenfaces, nearest matches, and reconstruction quality. Example identity labels were anonymized during source preparation. The required face dataset and generated images are not included, so no recognition rate or reconstruction score is claimed here.

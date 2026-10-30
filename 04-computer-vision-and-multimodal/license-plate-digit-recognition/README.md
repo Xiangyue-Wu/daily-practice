@@ -4,6 +4,10 @@
 
 This project recognizes numeric characters in clean and simulated license-plate images. It combines image preprocessing, character localization and segmentation, handcrafted features, template-derived training samples, and classifier-based digit prediction.
 
+• Built plate preprocessing and character segmentation with contrast enhancement, denoising, adaptive thresholding, morphology, contour analysis, and candidate filtering.
+
+• Combined augmented digit templates, HOG and topology-related features, auxiliary K-means representations, and SVM/random-forest predictions for recognition.
+
 ## Approach
 
 The retained scripts cover single-character tests, clean-plate processing, and a more extensive real-image pipeline. OpenCV operations include grayscale conversion, contrast enhancement, denoising, adaptive thresholding, morphology, contour analysis, and candidate filtering. The real-image implementation augments digit templates, extracts HOG and topology-related features, uses K-means as an auxiliary representation, and combines SVM and random-forest predictions. It expects `data/char_tmpl` and plate images under a data directory. Those inputs and generated diagnostics are not distributed, so recognition performance is not asserted.

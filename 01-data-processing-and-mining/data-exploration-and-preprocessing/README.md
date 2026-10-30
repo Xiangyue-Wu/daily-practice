@@ -4,6 +4,10 @@
 
 This project explores and prepares online retail transaction data for later analysis. It focuses on data quality, distribution analysis, customer–item representations, similarity measurement, scaling, and categorical encoding rather than fitting a final predictive model.
 
+• Prepared online retail transactions through missing-value handling, abnormal-value filtering, date normalization, description cleanup, and exploratory visualization.
+
+• Constructed customer–item representations to compare Euclidean distance, cosine similarity, and Pearson correlation, alongside scaling and categorical-encoding demonstrations.
+
 ## Approach
 
 The main Python program loads a sample of `online_retail_II.csv`, reviews the table, handles missing records and abnormal values, normalizes dates and descriptions, and creates univariate and multivariate visualizations. It builds a customer–item matrix and compares Euclidean distance, cosine similarity, and Pearson correlation for active customers. Min–max and Z-score scaling are also demonstrated, along with optional categorical encodings. The cleaned table is written to an output directory. Source code is included, but the retail dataset and generated artifacts are not.
